@@ -4,7 +4,7 @@ import requests
 
 app = Flask(__name__)
 
-db_conn = psycopg.connect("dbname=mac user=postgres password=3f@db host=164.90.152.205 port=80")
+db_conn = psycopg.connect("dbname=tralalero user=postgres password=3f@db host=164.90.152.205 port=80")
 
 # Buscar filme pelo título
 @app.route('/filme/nome/<titulo>', methods=['GET'])
