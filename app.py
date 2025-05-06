@@ -25,7 +25,7 @@ def procurar_por_titulo(titulo):
         cursor.execute("SELECT * FROM filmes WHERE titulo ILIKE %s", (f"%{titulo}%",)) 
         resultado_query = cursor.fetchall() # então ele dá um fetch (busca)
 
-        if resultado_query: # consulta os resultados
+        if resultado_query: 
 
             for item in resultado_query:
                 lista_filmes.append({ # coloca dentro de uma lista
@@ -36,12 +36,12 @@ def procurar_por_titulo(titulo):
                     "tipo": item[4]
                 })
 
-            return jsonify({ # retorno de um json
+            return jsonify({ 
                 "mensagem": f"{len(lista_filmes)} filme(s) localizado(s).",
                 "filmes": lista_filmes
             })
 
-        # Consulta externa na OMDb se não encontrado
+
         resposta_api = requests.get(f"http://www.omdbapi.com/?apikey=58cc3cb5&t={titulo}")
         if resposta_api.status_code == 200:
             dados_filme = resposta_api.json()
