@@ -13,7 +13,6 @@ def sender(tipo):
     informacao = dado.get('informacao') 
 
     if tipo == 'titulo':
-        # se for pesquisa por titulo chama a função necessária
         procurar_por_titulo(informacao)
     else:
         procurar_por_id(informacao)
@@ -23,12 +22,12 @@ def procurar_por_titulo(titulo):
     lista_filmes = []
     with db_conn.cursor() as cursor:
         cursor.execute("SELECT * FROM filmes WHERE titulo ILIKE %s", (f"%{titulo}%",)) 
-        resultado_query = cursor.fetchall() # então ele dá um fetch (busca)
+        resultado_query = cursor.fetchall() 
 
         if resultado_query: 
 
             for item in resultado_query:
-                lista_filmes.append({ # coloca dentro de uma lista
+                lista_filmes.append({ 
                     "id": item[0],
                     "imdb_id": item[1],
                     "titulo": item[2],
@@ -63,7 +62,7 @@ def procurar_por_titulo(titulo):
                 )
                 """,
                 (
-                    # aqui os valores que serão inseridos são colocados bseando nos nomes, que fica igual linha na tabela
+                    
                     dados_filme['imdbId'], dados_filme['Title'], dados_filme['Type'], dados_filme['Year'],
                     dados_filme['Rated'], dados_filme['Released'], dados_filme['Runtime'], dados_filme['Genre'],
                     dados_filme['Director'], dados_filme['Writer'], dados_filme['Plot'], dados_filme['Language'],
@@ -72,7 +71,7 @@ def procurar_por_titulo(titulo):
                 )
                 )
                 db_conn.commit()
-                return jsonify({ # outro retorno
+                return jsonify({ 
                     "mensagem": "Filme obtido da OMDb e gravado no banco.",
                     "filme": {
                         "imdb_id": dados_filme['imdbID'],
