@@ -10,7 +10,7 @@ db_conn = psycopg.connect("dbname=tralalero user=postgres password=3f@db host=16
 def sender(tipo):
 
     dado = request.get_json()
-    informacao = dado.get('informacao') # informação por meio do JSON
+    informacao = dado.get('informacao') 
 
     if tipo == 'titulo':
         # se for pesquisa por titulo chama a função necessária
@@ -22,7 +22,7 @@ def sender(tipo):
 def procurar_por_titulo(titulo):
     lista_filmes = []
     with db_conn.cursor() as cursor:
-        cursor.execute("SELECT * FROM filmes WHERE titulo ILIKE %s", (f"%{titulo}%",)) # seleciona o que já tem dentro da tabeal
+        cursor.execute("SELECT * FROM filmes WHERE titulo ILIKE %s", (f"%{titulo}%",)) 
         resultado_query = cursor.fetchall() # então ele dá um fetch (busca)
 
         if resultado_query: # consulta os resultados
@@ -46,7 +46,7 @@ def procurar_por_titulo(titulo):
         if resposta_api.status_code == 200:
             dados_filme = resposta_api.json()
 
-            if dados_filme.get('Response') == 'True': # se não deu erro na consulta
+            if dados_filme.get('Response') == 'True': 
                 cursor.execute("""
                     INSERT INTO filmes_series (
                     imdb_id, titulo, tipo, ano,
