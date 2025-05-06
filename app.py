@@ -6,7 +6,6 @@ app = Flask(__name__)
 
 db_conn = psycopg.connect("dbname=tralalero user=postgres password=3f@db host=164.90.152.205 port=80")
 
-# Buscar filme pelo título
 @app.route('/filme/nome/<titulo>', methods=['GET'])
 def procurar_por_titulo(titulo):
     with db_conn.cursor() as cursor:
@@ -51,7 +50,6 @@ def procurar_por_titulo(titulo):
                     }
                 })
 
-# Buscar filme pelo IMDb ID
 @app.route('/filme/id/<codigo_imdb>', methods=['GET'])
 def procurar_por_id(codigo_imdb):
     with db_conn.cursor() as cursor:
@@ -70,18 +68,31 @@ def procurar_por_id(codigo_imdb):
                 }
             })
 
-        # Busca alternativa na OMDb
         resposta_api = requests.get(f"http://www.omdbapi.com/?i={codigo_imdb}&apikey=58cc3cb5")
         if resposta_api.status_code == 200:
             dados_filme = resposta_api.json()
 
             if dados_filme.get('Response') == 'True':
                 cursor.execute("""
-                    INSERT INTO filmes (imdb_id, titulo, ano, tipo)
-                    VALUES (%s, %s, %s, %s)
-                """, (dados_filme['imdbID'], dados_filme['Title'], dados_filme['Year'], dados_filme['Type']))
+                    INSERT INTO filmes_series (
+                    imdb_id, titulo, tipo, ano,
+                    nota, lancamento, duracao, genero,
+                    diretor, escritores, sinopse, linguagem,
+                    pais, premiacoes, poster, metascore,
+                    imdbrating, imdbvotes
+                ) VALUES (
+                    %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s
+                )
+                """,
+                (
+                    dados_filme['imdbId'], dados_filme['Title'], dados_filme['Type'], dados_filme['Year'],
+                    dados_filme['Rated'], dados_filme['Released'], dados_filme['Runtime'], dados_filme['Genre'],
+                    dados_filme['Director'], dados_filme['Writer'], dados_filme['Plot'], dados_filme['Language'],
+                    dados_filme['Country'], dados_filme['Awards'], dados_filme['Metascore'],
+                    dados_filme['imdbRating'], dados_filme['imdbVotes']
+                )
+                )
                 db_conn.commit()
-
                 return jsonify({
                     "mensagem": "Filme obtido da OMDb e gravado no banco.",
                     "filme": {
@@ -90,4 +101,4 @@ def procurar_por_id(codigo_imdb):
                         "ano": dados_filme['Year'],
                         "tipo": dados_filme['Type']
                     }
-                })
+                });
